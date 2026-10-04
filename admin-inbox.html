@@ -96,6 +96,15 @@
 
   /* ここから下はモバイル版（スマホ幅）専用の調整。PC表示（820px超）には一切影響しない。 */
   @media (max-width: 820px) {
+    /* スマホのブラウザはアドレスバーの表示/非表示で実際に見える高さが変わるため、
+       固定の100vhだと短すぎたり長すぎたりして、下部（入力欄や案内文）が隠れる・
+       上部で背景が途切れて見えるという問題が起きる。100dvh（動的ビューポート高）に
+       することで、実際に見えている高さに正しく追従させる。
+       対応ブラウザが少ない環境向けに100vhをフォールバックとして先に残す。 */
+    html, body { height: 100vh; height: 100dvh; }
+    body { overflow-y: auto; overflow-x: hidden; }
+    .page { height: 100vh; height: 100dvh; overflow-y: auto; overflow-x: hidden; }
+
     .page-content { padding: 4px 10px 12px !important; gap: 8px !important; }
 
     .inbox-list, .inbox-thread { border-radius: 12px; }
