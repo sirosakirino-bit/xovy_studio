@@ -22,6 +22,10 @@
   @font-face { font-family: 'Dela Gothic One'; src: url('fonts/DelaGothicOne-Regular.woff') format('woff'), url('fonts/DelaGothicOne-Regular.ttf') format('truetype'); font-weight: normal; font-style: normal; font-display: fallback; }
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; }
+  /* 背景はhtml要素にも敷いておく。bodyの高さが実際の表示領域と1pxでもズレた場合（スマホの
+     アドレスバー等で起こりやすい）、はみ出した部分にbodyの背景が届かず白く途切れて見えるが、
+     html側にも同じ背景があれば、どんな画面サイズ・どんな高さのズレが起きても必ず下に敷かれているため途切れて見えることがない。 */
+  html { background: radial-gradient(circle, #c9e2ef 1px, transparent 1px) 0 0/26px 26px, linear-gradient(180deg, #eef8fd 0%, #f7fbff 100%); }
   body { background: radial-gradient(circle, #c9e2ef 1px, transparent 1px) 0 0/26px 26px, linear-gradient(180deg, #eef8fd 0%, #f7fbff 100%); font-family: 'Kosugi Maru', system-ui, sans-serif; color: #3b454a; line-height: 1.85; letter-spacing: 0.2px; text-rendering: optimizeLegibility; height: 100vh; overflow: hidden; }
   a { color: #2f9bd6; text-decoration: none; }
   .page { width: 100%; max-width: 1320px; height: 100vh; margin: 0 auto; display: flex; flex-direction: column; overflow: hidden; }
@@ -284,6 +288,17 @@
 </div>
 
 <script>
+  // モバイル幅（820px以下）では、メッセージ下の案内文（お知らせメールが届かない場合は…）を隠す。
+  // CSS（@media (max-width: 820px) の #thread-mail-hint { display: none !important; }）と
+  // 二重の仕組みにして、キャッシュ等で万一片方が反映されていなくても確実に隠れるようにしている。
+  function updateMailHintVisibility() {
+    var hint = document.getElementById('thread-mail-hint');
+    if (!hint) return;
+    hint.style.display = (window.innerWidth <= 820) ? 'none' : '';
+  }
+  updateMailHintVisibility();
+  window.addEventListener('resize', updateMailHintVisibility);
+
   function toggleMobileNav() {
     var topbar = document.querySelector('.topbar');
     if (topbar) topbar.classList.toggle('nav-open');
