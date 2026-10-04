@@ -99,6 +99,26 @@
     .topbar { padding: 16px 12px; gap: 6px; }
     .avatar { width: 28px; height: 28px; }
   }
+
+  /* ==== モバイル版専用：ヘッダー固定・コンパクト化、左右余白をメッセージ画面と同じ幅に ====
+     PC表示（820px超）には一切影響しない。 */
+  @media (max-width: 820px) {
+    .topbar {
+      position: sticky !important;
+      top: 0 !important;
+      z-index: 80 !important;
+      background: radial-gradient(circle, #c9e2ef 1px, transparent 1px) 0 0/26px 26px, linear-gradient(180deg, #eef8fd 0%, #f7fbff 100%) !important;
+      padding: 10px 14px !important;
+    }
+    .logo { font-size: 15px !important; }
+    .logo img { height: 26px !important; }
+    .page-content { padding-left: 10px !important; padding-right: 10px !important; padding-top: 4px !important; }
+
+    /* 上部の情報カード（保有ポイント・相談内容・ステータス）を小さくして、メッセージ本体を見やすく */
+    .thread-info-card { padding: 10px 14px !important; gap: 6px !important; }
+    #thread-title { font-size: 12.5px !important; }
+    #status-pill { font-size: 9.5px !important; padding: 4px 10px !important; }
+  }
 </style>
 </head>
 <body data-require-auth>
@@ -121,7 +141,7 @@
     </div>
   </div>
 
-  <div style="padding: 4px 36px 30px; display: flex; flex-direction: column; gap: 14px; flex-grow: 1;">
+  <div class="page-content" style="padding: 4px 36px 30px; display: flex; flex-direction: column; gap: 14px; flex-grow: 1;">
 
     <div style="font-size: 12px;"><a href="history.html">← 申請履歴に戻る</a></div>
 
@@ -131,7 +151,7 @@
 
     <div id="thread-wrap" style="display:none; flex-direction: column; gap: 14px; flex-grow: 1;">
 
-      <div style="background: #ffffff; border-radius: 18px; padding: 18px 24px; box-shadow: 0 3px 10px rgba(47,155,214,0.08); display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+      <div class="thread-info-card" style="background: #ffffff; border-radius: 18px; padding: 18px 24px; box-shadow: 0 3px 10px rgba(47,155,214,0.08); display: flex; align-items: center; justify-content: space-between; gap: 10px;">
         <div style="min-width: 0;">
           <div style="font-size: 11px; color: #5c6b73;">保有ポイント：<span id="balance-text" style="font-weight: 800; color: #2f9bd6;">ー</span></div>
           <div id="thread-title" style="font-size: 15px; font-weight: 800; margin-top: 3px;">読み込み中…</div>

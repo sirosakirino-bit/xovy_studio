@@ -109,7 +109,23 @@
     body { overflow-y: auto; overflow-x: hidden; }
     .page { height: 100vh; height: 100dvh; overflow-y: auto; overflow-x: hidden; }
 
+    /* ヘッダー（ロゴ・ナビ）を画面上部に固定し、縦幅とフォントを小さく */
+    .topbar {
+      position: sticky !important;
+      top: 0 !important;
+      z-index: 80 !important;
+      background: radial-gradient(circle, #c9e2ef 1px, transparent 1px) 0 0/26px 26px, linear-gradient(180deg, #eef8fd 0%, #f7fbff 100%) !important;
+      padding: 10px 14px !important;
+    }
+    .topbar > div:first-child { font-size: 15px !important; }
+    .topbar > div:first-child img { height: 26px !important; }
+
     .page-content { padding: 4px 10px 12px !important; gap: 8px !important; }
+
+    /* 「申請ごとのやり取りを一覧で確認できます…」の説明文はモバイルでは非表示にし、タイトルも小さく */
+    .page-intro { margin-bottom: -2px; }
+    .page-intro-title { font-size: 15px !important; }
+    .page-intro-desc { display: none !important; }
 
     .inbox-list, .inbox-thread { border-radius: 12px; }
 
@@ -222,8 +238,8 @@
   <div class="page-content" style="padding: 4px 36px 36px; display: flex; flex-direction: column; gap: 12px; flex-grow: 1; min-height: 0; overflow: hidden;">
 
     <div class="page-intro" style="flex-shrink: 0;">
-      <div style="font-family: 'GenEi Kiwami Gothic', 'Dela Gothic One', system-ui, sans-serif; font-size: 20px; font-weight: 800; font-weight: 400;">メッセージ</div>
-      <div style="font-size: 12px; color: #5c6b73; margin-top: 2px;">申請ごとのやり取りを一覧で確認できます。左から選ぶと、右側の表示がそのまま切り替わります。</div>
+      <div class="page-intro-title" style="font-family: 'GenEi Kiwami Gothic', 'Dela Gothic One', system-ui, sans-serif; font-size: 20px; font-weight: 800; font-weight: 400;">メッセージ</div>
+      <div class="page-intro-desc" style="font-size: 12px; color: #5c6b73; margin-top: 2px;">申請ごとのやり取りを一覧で確認できます。左から選ぶと、右側の表示がそのまま切り替わります。</div>
     </div>
 
     <div class="inbox-split">
@@ -296,8 +312,18 @@
     if (!hint) return;
     hint.style.display = (window.innerWidth <= 820) ? 'none' : '';
   }
+  // 同様に「申請ごとのやり取りを一覧で確認できます…」の説明文も、CSSと二重でモバイル時に隠す。
+  function updatePageIntroDescVisibility() {
+    var desc = document.querySelector('.page-intro-desc');
+    if (!desc) return;
+    desc.style.display = (window.innerWidth <= 820) ? 'none' : '';
+  }
   updateMailHintVisibility();
-  window.addEventListener('resize', updateMailHintVisibility);
+  updatePageIntroDescVisibility();
+  window.addEventListener('resize', function () {
+    updateMailHintVisibility();
+    updatePageIntroDescVisibility();
+  });
 
   function toggleMobileNav() {
     var topbar = document.querySelector('.topbar');
