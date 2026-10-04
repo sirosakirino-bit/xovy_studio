@@ -117,6 +117,18 @@
     .thread-info-card { padding: 10px 14px !important; gap: 6px !important; }
     #thread-title { font-size: 12.5px !important; }
     #status-pill { font-size: 9.5px !important; padding: 4px 10px !important; }
+
+    /* 営業時間のお知らせ・依頼内容カードを▼タップで展開する形式に（モバイルのみ） */
+    .hours-notice-toggle { cursor: pointer; }
+    #hours-notice-arrow { display: inline-block !important; }
+    #hours-notice-rest { display: none; margin-top: 4px; }
+    .hours-notice.expanded #hours-notice-rest { display: block; }
+    .hours-notice.expanded #hours-notice-arrow { transform: rotate(180deg); }
+
+    .thread-info-toggle { display: flex !important; cursor: pointer; }
+    #thread-info-body { display: none !important; margin-top: 8px; }
+    .thread-info-card.expanded #thread-info-body { display: flex !important; }
+    .thread-info-card.expanded #thread-info-arrow { transform: rotate(180deg); }
   }
 </style>
 </head>
@@ -143,19 +155,31 @@
 
     <div style="font-size: 12px;"><a href="apply-monthly.html">← 今月のご依頼に戻る</a></div>
 
-    <div style="background: #fff8ec; border: 1px solid #f5e3bd; border-radius: 12px; padding: 10px 16px; font-size: 11.5px; color: #9c7a2e; line-height: 1.7;">営業時間は平日9:00〜17:00です。営業時間外や休業日にいただいたメッセージは、翌営業日以降のご返信となります。あらかじめご了承ください。</div>
+    <div class="hours-notice" id="hours-notice" style="background: #fff8ec; border: 1px solid #f5e3bd; border-radius: 12px; padding: 10px 16px; font-size: 11.5px; color: #9c7a2e; line-height: 1.7;">
+      <div class="hours-notice-toggle" onclick="toggleHoursNotice()" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+        <span>営業時間は平日9:00〜17:00です。</span>
+        <span id="hours-notice-arrow" style="display: none; flex-shrink: 0; font-size: 9px; color: #9c7a2e; transition: transform 0.2s;">▼</span>
+      </div>
+      <div id="hours-notice-rest">営業時間外や休業日にいただいたメッセージは、翌営業日以降のご返信となります。あらかじめご了承ください。</div>
+    </div>
 
     <div id="thread-error" style="display:none; background:#fbecec; border:1px solid #f3d3d3; color:#c0524f; font-size:12px; padding:10px 16px; border-radius:12px;"></div>
 
     <div id="thread-wrap" style="display:none; flex-direction: column; gap: 14px; flex-grow: 1;">
 
-      <div class="thread-info-card" style="background: #ffffff; border-radius: 18px; padding: 18px 24px; box-shadow: 0 3px 10px rgba(47,155,214,0.08); display: flex; align-items: center; justify-content: space-between; gap: 10px;">
-        <div style="min-width: 0;">
-          <div style="font-size: 11px; color: #5c6b73;">今月の確保枠：<span style="font-weight: 800; color: #2f9bd6;">2pt相当</span></div>
-          <div id="thread-title" style="font-size: 15px; font-weight: 800; margin-top: 3px;">読み込み中…</div>
-          <div id="thread-started" style="font-size: 11px; color: #5c6b73; margin-top: 3px;"></div>
+      <div class="thread-info-card" style="background: #ffffff; border-radius: 18px; padding: 18px 24px; box-shadow: 0 3px 10px rgba(47,155,214,0.08); display: flex; flex-direction: column;">
+        <div class="thread-info-toggle" onclick="toggleThreadInfo()" style="display: none; align-items: center; justify-content: space-between;">
+          <span style="font-size: 12px; font-weight: 800; color: #3b454a;">依頼内容</span>
+          <span id="thread-info-arrow" style="font-size: 9px; color: #5c6b73; transition: transform 0.2s;">▼</span>
         </div>
-        <div id="status-pill" style="font-size: 11px; font-weight: 700; padding: 5px 14px; border-radius: 999px; background: #eef2f4; color: #5c6b73; flex-shrink: 0;">ー</div>
+        <div id="thread-info-body" style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+          <div style="min-width: 0;">
+            <div style="font-size: 11px; color: #5c6b73;">今月の確保枠：<span style="font-weight: 800; color: #2f9bd6;">2pt相当</span></div>
+            <div id="thread-title" style="font-size: 15px; font-weight: 800; margin-top: 3px;">読み込み中…</div>
+            <div id="thread-started" style="font-size: 11px; color: #5c6b73; margin-top: 3px;"></div>
+          </div>
+          <div id="status-pill" style="font-size: 11px; font-weight: 700; padding: 5px 14px; border-radius: 999px; background: #eef2f4; color: #5c6b73; flex-shrink: 0;">ー</div>
+        </div>
       </div>
 
       <div style="background: #ffffff; border-radius: 18px; padding: 22px 24px; box-shadow: 0 3px 10px rgba(47,155,214,0.08); display: flex; flex-direction: column; gap: 16px; flex-grow: 1;">
@@ -193,6 +217,14 @@
       topbar.classList.remove('nav-open');
     }
   });
+  function toggleHoursNotice() {
+    var el = document.getElementById('hours-notice');
+    if (el) el.classList.toggle('expanded');
+  }
+  function toggleThreadInfo() {
+    var el = document.querySelector('.thread-info-card');
+    if (el) el.classList.toggle('expanded');
+  }
 </script>
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script src="auth.js"></script>
@@ -432,8 +464,9 @@
     });
   }
 </script>
-<div style="text-align: center; padding: 18px 36px 14px; font-size: 10.5px; color: #b3c2c9;">
-  &copy; 2026 Xovy Studio&#12288;<a href="legal.html" style="color: #5c6b73; text-decoration: underline;">利用規約・プライバシーポリシー・特定商取引法に基づく表記</a>
+<div style="text-align: center; padding: 18px 16px 14px; font-size: 10.5px; color: #b3c2c9; display: flex; flex-direction: column; gap: 4px;">
+  <div>&copy; 2026 Xovy Studio</div>
+  <div style="white-space: nowrap;"><a href="legal.html" style="color: #5c6b73; text-decoration: underline;">利用規約・プライバシーポリシー・特定商取引法に基づく表記</a></div>
 </div>
 </body>
 </html>
